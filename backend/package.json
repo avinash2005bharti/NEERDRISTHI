@@ -1,0 +1,23 @@
+{
+  "name": "orca-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ORCA Backend - ai-services (FastAPI/Python) & server (Node.js)",
+  "scripts": {
+    "server": "npm --prefix server run dev",
+    "server:start": "npm --prefix server start",
+    "test:server": "npm --prefix server test",
+    "ai-services": "cd ai-services && .\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --port 8000",
+    "test:ai-services": "cd ai-services && .\\.venv\\Scripts\\python.exe -m pytest app/tests"
+  },
+  "keywords": [
+    "orca",
+    "marine",
+    "langgraph",
+    "multi-agent",
+    "fastapi",
+    "express"
+  ],
+  "author": "SIH26176 Team",
+  "license": "UNLICENSED"
+}

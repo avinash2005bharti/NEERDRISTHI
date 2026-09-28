@@ -1,0 +1,74 @@
+{
+  "dataset_metadata": {
+    "title": "Copernicus & NASA Satellite Sea Surface Temperature and Chlorophyll-a Benchmark Dataset",
+    "mode": "demo_offline_sample",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    "source": "E.U. Copernicus Marine Service (CMEMS) & NASA OceanColor MODIS-Aqua / VIIRS",
+    "timestamp": "2026-09-20T12:00:00Z",
+    "spatial_resolution": "1 km x 1 km (Level 3 / Level 4 Gridded)",
+    "processing_level": "Level 4 Analyzed SST / Level 3 Binned Chlorophyll-a",
+    "notice": "DEMO RESEARCH DATASET — Not live observations. Intended for algorithmic evaluation and offline demonstrations."
+  },
+  "observations": [
+    {
+      "latitude": 18.98,
+      "longitude": 72.83,
+      "region": "Mumbai Coastal Waters",
+      "sea_surface_temp_celsius": 28.4,
+      "chlorophyll_a_mg_m3": 1.45,
+      "turbidity_ntu": 3.2,
+      "bathymetry_depth_meters": 24.0,
+      "distance_to_coast_km": 14.5
+    },
+    {
+      "latitude": 13.08,
+      "longitude": 80.29,
+      "region": "Chennai Coastal Waters",
+      "sea_surface_temp_celsius": 29.1,
+      "chlorophyll_a_mg_m3": 1.12,
+      "turbidity_ntu": 2.8,
+      "bathymetry_depth_meters": 32.0,
+      "distance_to_coast_km": 11.2
+    },
+    {
+      "latitude": 9.96,
+      "longitude": 76.26,
+      "region": "Kochi Upwelling Belt",
+      "sea_surface_temp_celsius": 27.2,
+      "chlorophyll_a_mg_m3": 2.85,
+      "turbidity_ntu": 4.1,
+      "bathymetry_depth_meters": 28.0,
+      "distance_to_coast_km": 18.0
+    },
+    {
+      "latitude": 15.42,
+      "longitude": 73.80,
+      "region": "Goa Coastal Zone",
+      "sea_surface_temp_celsius": 28.6,
+      "chlorophyll_a_mg_m3": 1.60,
+      "turbidity_ntu": 2.5,
+      "bathymetry_depth_meters": 22.0,
+      "distance_to_coast_km": 9.5
+    },
+    {
+      "latitude": 17.68,
+      "longitude": 83.28,
+      "region": "Visakhapatnam Shelf",
+      "sea_surface_temp_celsius": 28.8,
+      "chlorophyll_a_mg_m3": 0.95,
+      "turbidity_ntu": 2.1,
+      "bathymetry_depth_meters": 45.0,
+      "distance_to_coast_km": 16.4
+    },
+    {
+      "latitude": 20.90,
+      "longitude": 70.36,
+      "region": "Saurashtra / Veraval Thermal Front",
+      "sea_surface_temp_celsius": 26.8,
+      "chlorophyll_a_mg_m3": 3.10,
+      "turbidity_ntu": 3.5,
+      "bathymetry_depth_meters": 38.0,
+      "distance_to_coast_km": 22.0
+    }
+  ]
+}

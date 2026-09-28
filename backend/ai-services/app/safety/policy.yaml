@@ -1,0 +1,39 @@
+version: "1.0.0"
+description: "ORCA Deterministic Maritime Safety & Risk Policy for SIH26176"
+
+# Vessel class limits: Max wave height (meters) and max wind speed (meters/second)
+# 1 m/s ~= 1.94 knots
+vessel_limits:
+  traditional_unmotorized:
+    max_wave_height_meters: 1.2
+    max_wind_speed_mps: 8.0 # ~15 knots
+    description: "Country craft, catamarans, dugouts without propulsion engines"
+  
+  motorized_fiberglass:
+    max_wave_height_meters: 2.0
+    max_wind_speed_mps: 12.5 # ~24 knots
+    description: "FRP boats with outboard or inboard engines (up to 32 ft)"
+  
+  mechanized_trawler:
+    max_wave_height_meters: 3.5
+    max_wind_speed_mps: 18.0 # ~35 knots (Near gale force)
+    description: "Commercial mechanized trawlers, gillnetters (up to 70 ft)"
+  
+  deep_sea_vessel:
+    max_wave_height_meters: 5.0
+    max_wind_speed_mps: 22.0 # ~43 knots (Strong gale force)
+    description: "Large deep-sea tuna longliners and oceanographic research vessels"
+
+# Policy decisions on special conditions
+severe_weather_warning_action: "NO_GO"
+restricted_zone_action: "NO_GO"
+missing_weather_action: "INSUFFICIENT_DATA"
+missing_marine_action: "INSUFFICIENT_DATA"
+stale_data_action: "GO_WITH_CAUTION"
+default_action_on_critical_gap: "INSUFFICIENT_DATA"
+
+# Wave cautionary margin (e.g. within 80% of vessel limit triggers CAUTION)
+cautionary_margin_ratio: 0.80
+
+# Restricted zone buffer in kilometers
+restricted_zone_buffer_km: 5.0

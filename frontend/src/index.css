@@ -1,0 +1,314 @@
+/* ══════════════════════════════════════════════════════════════════
+   ORCA Design System — Oceanic Tactical & Scientific Intelligence
+   SIH 26176 Marine Ecosystem Reasoning Platform
+   ══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Deep Oceanic Color Tokens */
+  --bg-abyss: #050b14;
+  --bg-surface: #0a1626;
+  --bg-card: #0f2038;
+  --bg-card-hover: #162c4d;
+  --bg-glass: rgba(10, 22, 38, 0.85);
+
+  /* Borders & Accents */
+  --border-subtle: rgba(56, 189, 248, 0.12);
+  --border-active: rgba(56, 189, 248, 0.4);
+  --border-glow: 0 0 15px rgba(6, 182, 212, 0.25);
+
+  /* Bioluminescent Marine Palette */
+  --cyan-primary: #06b6d4;
+  --cyan-hover: #22d3ee;
+  --cyan-glow: rgba(6, 182, 212, 0.35);
+  --teal-accent: #14b8a6;
+  --deep-blue: #0284c7;
+
+  /* Maritime Risk & Recommendation Tokens */
+  --status-go: #10b981;
+  --status-go-bg: rgba(16, 185, 129, 0.15);
+  --status-caution: #f59e0b;
+  --status-caution-bg: rgba(245, 158, 11, 0.15);
+  --status-nogo: #ef4444;
+  --status-nogo-bg: rgba(239, 68, 68, 0.15);
+  --status-gap: #64748b;
+  --status-gap-bg: rgba(100, 116, 139, 0.15);
+
+  /* Text & Contrast */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --text-glow: 0 0 8px rgba(34, 211, 238, 0.3);
+
+  /* Layout dimensions */
+  --nav-height: 64px;
+  --bottom-nav-height: 68px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-abyss);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-abyss);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.4);
+}
+
+/* Typography Utility */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Glassmorphic Panels */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+}
+
+.glass-panel-glow {
+  background: var(--bg-glass);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-active);
+  box-shadow: var(--border-glow);
+  border-radius: 12px;
+}
+
+/* Glowing Pulsing Status Dots */
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulseAnimation 2s infinite ease-in-out;
+}
+.pulse-dot.live {
+  background-color: var(--status-go);
+  box-shadow: 0 0 8px var(--status-go);
+}
+.pulse-dot.warning {
+  background-color: var(--status-caution);
+  box-shadow: 0 0 8px var(--status-caution);
+}
+.pulse-dot.danger {
+  background-color: var(--status-nogo);
+  box-shadow: 0 0 8px var(--status-nogo);
+}
+
+@keyframes pulseAnimation {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Interactive Buttons */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  outline: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+  transform: translateY(-1px);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-active);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  background: rgba(15, 32, 56, 0.8);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.btn-icon:hover {
+  background: rgba(30, 58, 95, 0.9);
+  border-color: var(--cyan-primary);
+  color: var(--cyan-hover);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-go {
+  background: var(--status-go-bg);
+  color: var(--status-go);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-caution {
+  background: var(--status-caution-bg);
+  color: var(--status-caution);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-nogo {
+  background: var(--status-nogo-bg);
+  color: var(--status-nogo);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.badge-insufficient {
+  background: var(--status-gap-bg);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Full Leaflet Map Overrides */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #07101c !important;
+  font-family: var(--font-body) !important;
+}
+
+.leaflet-bottom.leaflet-right {
+  bottom: 24px !important;
+  right: 16px !important;
+}
+
+.leaflet-bar {
+  border: 1px solid var(--border-active) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.leaflet-bar a {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+.leaflet-bar a:hover {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  color: var(--cyan-primary) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(10, 20, 36, 0.7) !important;
+  color: var(--text-dim) !important;
+  font-size: 0.65rem !important;
+  border-radius: 4px 4px 0 0 !important;
+  padding: 1px 6px !important;
+}
+.leaflet-control-attribution a {
+  color: var(--cyan-primary) !important;
+  text-decoration: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-active) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 10px !important;
+  padding: 0 !important;
+}
+.leaflet-popup-content {
+  margin: 12px 16px !important;
+  line-height: 1.4 !important;
+}
+.leaflet-popup-tip {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-active) !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
