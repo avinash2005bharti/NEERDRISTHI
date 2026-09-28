@@ -403,21 +403,31 @@ npm run dev
 
 ---
 
-### Step 3: Start React Vite Frontend (Port 5173)
+### Step 3: Access Frontend on Backend Gateway (Port 3001)
 
-Open a third terminal window:
+> **🎉 Single-Port Unified Deployment:**  
+> The React client distribution (`dist`) is bundled directly inside `backend/server/public`. When the Node.js gateway starts, it automatically serves the complete frontend application, static assets, and client-side SPA routing on **`http://localhost:3001`**.  
+> **During deployment (e.g. Render, Railway, AWS EC2, or Docker), you do NOT need a separate frontend hosting platform (like Vercel or Netlify)!**
+
+To rebuild and sync the frontend bundle to the backend at any time:
+```bash
+# From backend/server:
+npm run build:client
+```
+
+---
+
+### Step 4 (Optional): Dedicated Frontend Vite Dev Server (Port 5173)
+
+For frontend UI development with hot module replacement (HMR):
 
 ```bash
-# Navigate to Frontend
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start Vite development server
 npm run dev
-# Running on http://localhost:5173
+# Running with HMR on http://localhost:5173
 ```
+
 
 Open your browser and navigate to **`http://localhost:5173`**.
 

@@ -7,6 +7,7 @@
     "server": "npm --prefix server run dev",
     "server:start": "npm --prefix server start",
     "test:server": "npm --prefix server test",
+    "build:frontend": "npm --prefix ../frontend run build && node --input-type=module -e \"import fs from 'fs'; fs.cpSync('../frontend/dist', './server/public', { recursive: true }); console.log('✓ Frontend dist synced to backend/server/public');\"",
     "ai-services": "cd ai-services && .\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --port 8000",
     "test:ai-services": "cd ai-services && .\\.venv\\Scripts\\python.exe -m pytest app/tests"
   },

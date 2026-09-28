@@ -51,6 +51,22 @@ describe('ORCA Server Test Suite', () => {
     assert.strictEqual(data.error.code, 'NOT_FOUND');
   });
 
+  test('GET / serves frontend index.html SPA entrypoint', async () => {
+    const res = await fetch(`${baseUrl}/`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert.ok(html.includes('<title>NEERDRISTI'));
+    assert.ok(html.includes('<div id="root"></div>'));
+  });
+
+  test('GET /home serves frontend index.html via SPA fallback routing', async () => {
+    const res = await fetch(`${baseUrl}/home`);
+    assert.strictEqual(res.status, 200);
+    const html = await res.text();
+    assert.ok(html.includes('<title>NEERDRISTI'));
+  });
+
+
   test('orcaQuerySchema validates correct query payload', () => {
     const valid = {
       query: 'Is it safe to depart from Sassoon Docks Mumbai?',
