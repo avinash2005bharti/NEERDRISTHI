@@ -78,11 +78,11 @@ Click **Apply**. Render will concurrently build and deploy:
 Once deployment completes, your services will be live:
 
 ### 1. Frontend Client
-- **URL**: `https://orca-frontend.onrender.com`
+- **URL**: `https://orca-frontend-55rq.onrender.com`
 - **Verification**: Open in your browser; verify that the login screen, interactive marine map, and navigation render properly.
 
 ### 2. Node.js API Gateway
-- **Health Check**: `https://orca-backend.onrender.com/health`
+- **Health Check**: `https://orca-backend-pgxq.onrender.com/health`
 - **Expected Response**:
   ```json
   {
@@ -97,7 +97,7 @@ Once deployment completes, your services will be live:
   ```
 
 ### 3. Python FastAPI Agent Core
-- **Health Check**: `https://orca-ai.onrender.com/health`
+- **Health Check**: `https://orca-ai-y03y.onrender.com/health`
 - **Expected Response**:
   ```json
   {
@@ -106,7 +106,7 @@ Once deployment completes, your services will be live:
     "role": "AI / LangGraph Multi-Agent & Spatial Intelligence Backend"
   }
   ```
-- **Interactive API Docs**: `https://orca-ai.onrender.com/docs`
+- **Interactive API Docs**: `https://orca-ai-y03y.onrender.com/docs`
 
 ---
 
