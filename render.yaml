@@ -9,11 +9,12 @@ services:
   # ----------------------------------------------------------------------------
   # 1. Frontend Client: React 18 + Vite SPA (Render Static Site)
   # ----------------------------------------------------------------------------
-  - type: static
+  - type: web
     name: orca-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    staticPublishPath: ./dist
     routes:
       - type: rewrite
         source: /*
@@ -47,12 +48,12 @@ services:
         value: 10000
       - key: CORS_ORIGINS
         fromService:
-          type: static
+          type: web
           name: orca-frontend
           property: url
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: web
           name: orca-frontend
           property: url
       - key: AI_SERVICE_URL
