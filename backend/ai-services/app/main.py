@@ -90,12 +90,15 @@ app.include_router(router)
 
 
 if __name__ == "__main__":
+    import os
     import uvicorn
 
+    port = int(os.environ.get("PORT", settings.effective_port))
     uvicorn.run(
         "app.main:app",
-        host=settings.FASTAPI_HOST,
-        port=settings.FASTAPI_PORT,
+        host="0.0.0.0",
+        port=port,
         reload=(settings.APP_ENV == "development"),
         log_level=settings.LOG_LEVEL.lower(),
     )
+

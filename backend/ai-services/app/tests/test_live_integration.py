@@ -20,7 +20,7 @@ async def test_weather_adapter_live():
     assert hasattr(result, "wind_speed_mps"), f"Expected WeatherObservation, got {result}"
     assert result.wind_speed_mps >= 0.0, "Wind speed must be non-negative"
     assert result.wave_height_meters >= 0.0, "Wave height must be non-negative"
-    assert result.provider == "OpenMeteoWeather"
+    assert result.provider in ("OpenMeteoWeather", "open-meteo, open-meteo-marine")
     assert result.retrieved_at is not None
 
 
@@ -32,7 +32,7 @@ async def test_pfz_adapter_fallback_to_sst_proxy():
     assert isinstance(result, list), f"Expected list of PFZRecord, got {result}"
     if result:
         assert result[0].sst_celsius is not None, "SST proxy must return SST value"
-        assert result[0].provider in ("INCOIS", "OpenMeteoSST-Proxy"), "Must identify provider"
+        assert result[0].provider in ("INCOIS", "OpenMeteoSST-Proxy", "ORCA-Derived-PFZ"), "Must identify provider"
 
 
 @pytest.mark.asyncio

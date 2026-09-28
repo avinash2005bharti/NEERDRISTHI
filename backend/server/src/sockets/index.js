@@ -11,7 +11,17 @@ let io = null;
 export function initializeSockets(httpServer) {
   io = new SocketIOServer(httpServer, {
     cors: {
-      origin: corsOriginsArray,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (
+          corsOriginsArray.includes('*') ||
+          corsOriginsArray.includes(origin) ||
+          /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+        ) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS policy does not allow Socket.IO access from origin: ${origin}`));
+      },
       methods: ['GET', 'POST'],
       credentials: true,
     },

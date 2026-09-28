@@ -14,9 +14,15 @@ class Settings(BaseSettings):
     )
 
     APP_ENV: str = "development"
+    PORT: Optional[int] = Field(default=None, description="Render injected port")
     FASTAPI_HOST: str = "0.0.0.0"
     FASTAPI_PORT: int = 8000
     LOG_LEVEL: str = "INFO"
+
+    @property
+    def effective_port(self) -> int:
+        return self.PORT or self.FASTAPI_PORT
+
 
     # Shared secret for internal gateway communication
     INTERNAL_SERVICE_SECRET: str = Field(default="", description="Secret shared between Gateway and Agent Core")

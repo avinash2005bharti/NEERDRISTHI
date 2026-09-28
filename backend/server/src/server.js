@@ -1,6 +1,6 @@
 import http from 'http';
 import { createApp } from './app.js';
-import { env } from './config/env.js';
+import { env, effectivePort, corsOriginsArray } from './config/env.js';
 import { connectMongo, closeMongo } from './config/database.js';
 import { initializeSockets } from './sockets/index.js';
 import { logger } from './utils/logger.js';
@@ -17,14 +17,14 @@ async function bootstrap() {
   // Initialize Socket.IO
   initializeSockets(server);
 
-  server.listen(env.GATEWAY_PORT, () => {
+  server.listen(effectivePort, '0.0.0.0', () => {
     logger.info(
       {
-        port: env.GATEWAY_PORT,
-        corsOrigins: env.CORS_ORIGINS,
+        port: effectivePort,
+        corsOrigins: corsOriginsArray,
         fastApiUrl: env.FASTAPI_INTERNAL_URL,
       },
-      `ORCA API Server listening on http://localhost:${env.GATEWAY_PORT}`
+      `ORCA API Server listening on http://0.0.0.0:${effectivePort}`
     );
   });
 

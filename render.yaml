@@ -1,0 +1,169 @@
+# ==============================================================================
+# Render Blueprint Specification — ORCA / NEERDRISTHI (SIH 26176)
+# Complete Multi-Service Deployment: React Frontend + Node Gateway + FastAPI AI
+# ==============================================================================
+# Docs: https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Frontend Client: React 18 + Vite SPA (Render Static Site)
+  # ----------------------------------------------------------------------------
+  - type: static
+    name: orca-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: orca-backend
+          property: url
+      - key: VITE_SOCKET_URL
+        fromService:
+          type: web
+          name: orca-backend
+          property: url
+
+  # ----------------------------------------------------------------------------
+  # 2. API Gateway: Node.js Express & Realtime Socket.IO Server (Render Web Service)
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: orca-backend
+    runtime: node
+    plan: free
+    rootDir: backend/server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGINS
+        fromService:
+          type: static
+          name: orca-frontend
+          property: url
+      - key: FRONTEND_URL
+        fromService:
+          type: static
+          name: orca-frontend
+          property: url
+      - key: AI_SERVICE_URL
+        fromService:
+          type: web
+          name: orca-ai
+          property: url
+      - key: FASTAPI_INTERNAL_URL
+        fromService:
+          type: web
+          name: orca-ai
+          property: url
+      - key: INTERNAL_SERVICE_SECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: orca
+      - key: LOG_LEVEL
+        value: info
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "100"
+
+  # ----------------------------------------------------------------------------
+  # 3. Cognitive Agent Core: Python FastAPI & LangGraph (Render Web Service)
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: orca-ai
+    runtime: python
+    plan: free
+    rootDir: backend/ai-services
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: INTERNAL_SERVICE_SECRET
+        fromService:
+          type: web
+          name: orca-backend
+          envVarKey: INTERNAL_SERVICE_SECRET
+      - key: JWT_SECRET
+        fromService:
+          type: web
+          name: orca-backend
+          envVarKey: JWT_SECRET
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: orca
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: GROQ_TEMPERATURE
+        value: "0"
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: WEATHER_PROVIDER
+        value: open_meteo
+      - key: WEATHER_BASE_URL
+        value: https://api.open-meteo.com
+      - key: WEATHER_FORECAST_ENDPOINT
+        value: /v1/forecast
+      - key: MARINE_PROVIDER
+        value: open_meteo
+      - key: MARINE_BASE_URL
+        value: https://marine-api.open-meteo.com
+      - key: MARINE_FORECAST_ENDPOINT
+        value: /v1/marine
+      - key: INCOIS_ERDDAP_ENABLED
+        value: "true"
+      - key: INCOIS_ERDDAP_BASE_URL
+        value: https://erddap.incois.gov.in/erddap
+      - key: MET_NO_ENABLED
+        value: "true"
+      - key: MET_NO_BASE_URL
+        value: https://api.met.no
+      - key: MET_NO_ENDPOINT
+        value: /weatherapi/locationforecast/2.0/complete
+      - key: MET_NO_USER_AGENT
+        value: "ORCA-SIH26176-Hackathon/1.0 (contact: student-team@sih26176.in)"
+      - key: GEOCODER_PROVIDER
+        value: nominatim
+      - key: GEOCODER_BASE_URL
+        value: https://nominatim.openstreetmap.org
+      - key: GEOCODER_ENDPOINT
+        value: /search
+      - key: GEOCODER_USER_AGENT
+        value: "ORCA-SIH26176-Hackathon/1.0 (contact: student-team@sih26176.in)"
+      - key: ALERT_PROVIDER
+        value: gdacs
+      - key: ALERT_BASE_URL
+        value: https://www.gdacs.org
+      - key: ENABLE_PROVIDER_FALLBACK
+        value: "true"
+      - key: PROVIDER_TIMEOUT_SECONDS
+        value: "15"
+      - key: REQUEST_TIMEOUT_SECONDS
+        value: "15"
+      - key: EXTERNAL_RETRY_ATTEMPTS
+        value: "2"
+      - key: MAX_DATA_FRESHNESS_MINUTES
+        value: "360"
+      - key: CACHE_TTL_SECONDS
+        value: "900"
+      - key: DEMO_MODE
+        value: "true"

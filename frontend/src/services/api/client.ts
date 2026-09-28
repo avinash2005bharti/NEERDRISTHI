@@ -1,9 +1,15 @@
 /**
- * Centralized API Client for ORCA
+ * Centralized API Client for ORCA / NEERDRISTHI
  * Handles base URLs, JWT injection, response normalization, and structured error mapping.
+ *
+ * In production decoupled deployment (e.g. Render Static Site calling Render Web Service),
+ * configure VITE_API_URL (e.g. https://orca-backend.onrender.com).
+ * In local dev proxy or single-port mode, VITE_API_URL can be omitted or empty.
  */
 
-const API_BASE = '/api/v1';
+const envApiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_BASE = envApiUrl ? `${envApiUrl}/api/v1` : '/api/v1';
+
 
 export class ApiError extends Error {
   status: number;

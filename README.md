@@ -433,7 +433,65 @@ Open your browser and navigate to **`http://localhost:5173`**.
 
 ---
 
+## ☁️ Render Cloud Deployment (One-Click Blueprint)
+
+The entire ORCA / NEERDRISTHI platform is deployable to [Render](https://render.com) using the root Blueprint [`render.yaml`](render.yaml), provisioning three interconnected services from a single GitHub repository:
+
+```mermaid
+graph TD
+    subgraph Render Platform
+        FE[orca-frontend<br/>React 18 + Vite Static Site]
+        GW[orca-backend<br/>Node.js + Express + Socket.IO Web Service]
+        AI[orca-ai<br/>FastAPI + LangGraph Web Service]
+    end
+
+    subgraph LangGraph Multi-Agent Core
+        AGENTS[Planner • Geospatial • Marine • Weather • PFZ • Risk • Synthesis]
+    end
+
+    subgraph External Cloud Services
+        EXT_DATA[Open-Meteo • INCOIS ERDDAP • MET Norway • Nominatim • GDACS]
+        CLOUD_DB[(MongoDB Atlas<br/>Users, Queries & 2dsphere GIS)]
+        CLOUD_AI[Groq Cloud<br/>LLaMA-3.3-70B Multilingual Inference]
+        CLOUD_VEC[(Qdrant Cloud<br/>Vector Semantic Memory)]
+    end
+
+    FE -->|HTTPS /api/v1| GW
+    FE -->|WSS /orca| GW
+    GW -->|HTTPS /internal/ai/chat| AI
+    AI --> AGENTS
+    AGENTS --> EXT_DATA
+    GW --> CLOUD_DB
+    AI --> CLOUD_DB
+    AI --> CLOUD_AI
+    AI --> CLOUD_VEC
+```
+
+### Render Services Configured in `render.yaml`
+
+| Service Name | Render Type | Runtime | Root Directory | Build Command | Start Command |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`orca-frontend`** | Static Site | Node / Static | `frontend` | `npm install && npm run build` | Static files (`dist/index.html` with SPA rewrite `/*` -> `/index.html`) |
+| **`orca-backend`** | Web Service | Node.js | `backend/server` | `npm install` | `npm start` (binds to `0.0.0.0:$PORT`) |
+| **`orca-ai`** | Web Service | Python | `backend/ai-services` | `pip install -r requirements.txt` | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+
+### Step-by-Step Render Deployment Instructions
+
+1. **Push to GitHub**: Ensure all commits are pushed to your repository (`main` branch).
+2. **Open Render**: Go to [dashboard.render.com](https://dashboard.render.com) and click **New +** → **Blueprint**.
+3. **Select Repository**: Connect your GitHub repository (`avinash2005bharti/NEERDRISTHI`).
+4. **Supply Required Secrets (`sync: false`)**:
+   - `MONGODB_URI`: Your MongoDB Atlas URI (`mongodb+srv://...`).
+   - `GROQ_API_KEY`: Your free Groq key from [console.groq.com](https://console.groq.com).
+   - *(Optional)* `QDRANT_URL` and `QDRANT_API_KEY` for vector memory.
+5. **Click Apply**: Render will automatically build and deploy all three services, linking their URLs and shared internal secrets automatically via Render service references.
+
+See [`docs/RENDER_DEPLOYMENT.md`](docs/RENDER_DEPLOYMENT.md) for full deployment instructions, verification endpoints, and operational troubleshooting.
+
+---
+
 ### 🐳 Alternative: Run with Docker Compose
+
 
 To start the complete stack with MongoDB and Valkey/Redis in a single command:
 

@@ -26,8 +26,10 @@ class SocketService {
     this.isConnecting = true;
     const token = getStoredToken();
 
-    // The Gateway namespace is /orca on port 3001 (proxied via Vite or direct)
-    const socketUrl = window.location.origin; // Vite proxy handles /socket.io
+    // In production decoupled deployment, connect to backend URL (e.g. https://orca-backend.onrender.com).
+    // In local dev proxy or single-port mode, falls back to window.location.origin.
+    const envSocketUrl = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+    const socketUrl = envSocketUrl || window.location.origin;
     
     this.socket = io(`${socketUrl}/orca`, {
       auth: {
