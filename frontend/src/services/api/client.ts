@@ -7,8 +7,13 @@
  * In local dev proxy or single-port mode, VITE_API_URL can be omitted or empty.
  */
 
-const envApiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
-const API_BASE = envApiUrl ? `${envApiUrl}/api/v1` : '/api/v1';
+const rawApiUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const normalizedApiUrl = rawApiUrl
+  ? rawApiUrl.startsWith('http://') || rawApiUrl.startsWith('https://')
+    ? rawApiUrl
+    : `https://${rawApiUrl}`
+  : '';
+const API_BASE = normalizedApiUrl ? `${normalizedApiUrl}/api/v1` : '/api/v1';
 
 
 export class ApiError extends Error {

@@ -28,7 +28,10 @@ class SocketService {
 
     // In production decoupled deployment, connect to backend URL (e.g. https://orca-backend.onrender.com).
     // In local dev proxy or single-port mode, falls back to window.location.origin.
-    const envSocketUrl = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+    let envSocketUrl = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+    if (envSocketUrl && !envSocketUrl.startsWith('http://') && !envSocketUrl.startsWith('https://')) {
+      envSocketUrl = `https://${envSocketUrl}`;
+    }
     const socketUrl = envSocketUrl || window.location.origin;
     
     this.socket = io(`${socketUrl}/orca`, {

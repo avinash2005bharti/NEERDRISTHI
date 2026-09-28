@@ -24,12 +24,12 @@ services:
         fromService:
           type: web
           name: orca-backend
-          property: url
+          property: host
       - key: VITE_SOCKET_URL
         fromService:
           type: web
           name: orca-backend
-          property: url
+          property: host
 
   # ----------------------------------------------------------------------------
   # 2. API Gateway: Node.js Express & Realtime Socket.IO Server (Render Web Service)
@@ -50,22 +50,22 @@ services:
         fromService:
           type: web
           name: orca-frontend
-          property: url
+          property: host
       - key: FRONTEND_URL
         fromService:
           type: web
           name: orca-frontend
-          property: url
+          property: host
       - key: AI_SERVICE_URL
         fromService:
           type: web
           name: orca-ai
-          property: url
+          property: host
       - key: FASTAPI_INTERNAL_URL
         fromService:
           type: web
           name: orca-ai
-          property: url
+          property: host
       - key: INTERNAL_SERVICE_SECRET
         generateValue: true
       - key: JWT_SECRET

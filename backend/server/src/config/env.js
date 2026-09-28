@@ -14,8 +14,8 @@ const envSchema = z.object({
   JWT_SECRET: z.string().optional().default(''),
   JWT_EXPIRES_IN: z.string().default('7d'),
   BCRYPT_SALT_ROUNDS: z.coerce.number().default(12),
-  AI_SERVICE_URL: z.string().url().optional(),
-  FASTAPI_INTERNAL_URL: z.string().url().default('http://localhost:8000'),
+  AI_SERVICE_URL: z.string().optional(),
+  FASTAPI_INTERNAL_URL: z.string().default('http://localhost:8000'),
   INTERNAL_SERVICE_SECRET: z.string().optional().default(''),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900000), // 15 mins
@@ -33,7 +33,15 @@ export const env = parsed.data;
 
 // Normalize AI service URL: AI_SERVICE_URL takes precedence if specified (Render convention)
 if (env.AI_SERVICE_URL) {
-  env.FASTAPI_INTERNAL_URL = env.AI_SERVICE_URL;
+  let aiUrl = env.AI_SERVICE_URL.trim().replace(/\/+$/, '');
+  if (!aiUrl.startsWith('http://') && !aiUrl.startsWith('https://')) {
+    aiUrl = aiUrl.includes('onrender.com') ? `https://${aiUrl}` : `http://${aiUrl}`;
+  }
+  env.FASTAPI_INTERNAL_URL = aiUrl;
+} else if (env.FASTAPI_INTERNAL_URL && !env.FASTAPI_INTERNAL_URL.startsWith('http://') && !env.FASTAPI_INTERNAL_URL.startsWith('https://')) {
+  env.FASTAPI_INTERNAL_URL = env.FASTAPI_INTERNAL_URL.includes('onrender.com')
+    ? `https://${env.FASTAPI_INTERNAL_URL}`
+    : `http://${env.FASTAPI_INTERNAL_URL}`;
 }
 
 // Compute effective port (Render provides process.env.PORT)
@@ -45,6 +53,12 @@ if (env.FRONTEND_URL) {
   const normalizedFrontendUrl = env.FRONTEND_URL.trim().replace(/\/+$/, '');
   if (!rawOrigins.includes(normalizedFrontendUrl)) {
     rawOrigins.push(normalizedFrontendUrl);
+  }
+  if (!normalizedFrontendUrl.startsWith('http://') && !normalizedFrontendUrl.startsWith('https://')) {
+    const httpsOrigin = `https://${normalizedFrontendUrl}`;
+    if (!rawOrigins.includes(httpsOrigin)) {
+      rawOrigins.push(httpsOrigin);
+    }
   }
 }
 export const corsOriginsArray = rawOrigins;
