@@ -5,6 +5,7 @@ import { socketAuthMiddleware } from './socketAuth.js';
 import { registerOrcaSocketHandlers } from './orcaHandlers.js';
 import { orcaEventEmitter } from './eventEmitter.js';
 import { logger } from '../utils/logger.js';
+import { fastApiClient } from '../clients/fastApiClient.js';
 
 let io = null;
 
@@ -48,6 +49,11 @@ export function initializeSockets(httpServer) {
   orcaNamespace.on('connection', (socket) => {
     logger.info({ socketId: socket.id, namespace: ORCA_SOCKET_NAMESPACE }, 'New client connected to /orca namespace');
     registerOrcaSocketHandlers(socket);
+
+    // Immediately trigger Python AI services wake-up upon frontend connection
+    fastApiClient.triggerWakeup('frontend_socket_connected').catch((err) => {
+      logger.debug({ err: err?.message }, 'Background AI wake-up on socket connect handled');
+    });
   });
 
   logger.info({ namespace: ORCA_SOCKET_NAMESPACE }, 'Socket.IO initialized successfully');

@@ -4,6 +4,7 @@ import { env, effectivePort, corsOriginsArray } from './config/env.js';
 import { connectMongo, closeMongo } from './config/database.js';
 import { initializeSockets } from './sockets/index.js';
 import { logger } from './utils/logger.js';
+import { fastApiClient } from './clients/fastApiClient.js';
 
 async function bootstrap() {
   logger.info({ env: env.NODE_ENV }, 'Starting ORCA API Server...');
@@ -26,6 +27,11 @@ async function bootstrap() {
       },
       `ORCA API Server listening on http://0.0.0.0:${effectivePort}`
     );
+
+    // Warm up / wake up Python AI services immediately when server starts
+    fastApiClient.triggerWakeup('server_bootstrap').catch((err) => {
+      logger.warn({ err: err?.message }, 'Initial background wake-up ping to Python AI services encountered note');
+    });
   });
 
   // Graceful shutdown handling

@@ -9,6 +9,7 @@ export class FastApiClient {
     this.workflowTimeoutMs = 90000;   // 90s for multi-agent reasoning (LangGraph + LLM synthesis)
     this.telemetryTimeoutMs = 45000;  // 45s for external telemetry adapters during cold start
     this.healthTimeoutMs = 8000;      // 8s for lightweight health checks
+    this.wakeupTimeoutMs = 35000;     // 35s for cold-start wake-up trigger
 
     this.client = axios.create({
       baseURL: env.FASTAPI_INTERNAL_URL,
@@ -18,6 +19,11 @@ export class FastApiClient {
         'x-internal-service-secret': env.INTERNAL_SERVICE_SECRET || '',
       },
     });
+
+    this.lastWakeupPing = 0;
+    this.aiStatus = 'unknown';
+    this.lastWakeupResult = null;
+    this.isWakingUp = false;
   }
 
   /**
@@ -109,17 +115,108 @@ export class FastApiClient {
     throw lastError;
   }
 
+  /**
+   * Dispatches an asynchronous non-blocking wake-up request to Python AI-services /health.
+   * Debounced to avoid hammering the service if rapid connections or requests occur.
+   * If the service is sleeping (e.g. Render cold start), this triggers the container spin-up immediately.
+   */
+  async triggerWakeup(source = 'manual') {
+    const now = Date.now();
+    // Debounce: don't send duplicate wake-up pings within 15 seconds if healthy or waking up
+    if (this.isWakingUp || (now - this.lastWakeupPing < 15000 && this.aiStatus === 'healthy')) {
+      logger.debug(
+        { source, aiStatus: this.aiStatus },
+        'FastAPI wake-up ping skipped (service recently checked or ping in flight)'
+      );
+      return this.lastWakeupResult || { status: this.aiStatus, source };
+    }
+
+    this.lastWakeupPing = now;
+    this.isWakingUp = true;
+    this.aiStatus = 'waking_up';
+
+    logger.info(
+      { source, url: `${env.FASTAPI_INTERNAL_URL}/health` },
+      '🚀 Dispatched wake-up ping to Python AI Services (/health)'
+    );
+
+    try {
+      const response = await this.client.get('/health', { timeout: this.wakeupTimeoutMs });
+      this.isWakingUp = false;
+      this.aiStatus = 'healthy';
+      this.lastWakeupResult = {
+        status: 'healthy',
+        details: response.data,
+        source,
+        timestamp: new Date().toISOString(),
+        latencyMs: Date.now() - now,
+      };
+      logger.info(
+        {
+          source,
+          latencyMs: Date.now() - now,
+          service: response.data?.service || 'orca-ai',
+        },
+        '✅ Python AI Services is awake and responding to health checks!'
+      );
+      return this.lastWakeupResult;
+    } catch (error) {
+      this.isWakingUp = false;
+      const isCold = this._isRetryableError(error);
+      this.aiStatus = isCold ? 'waking_up' : 'unreachable';
+      this.lastWakeupResult = {
+        status: this.aiStatus,
+        source,
+        error: error.message,
+        isColdStart: isCold,
+        timestamp: new Date().toISOString(),
+      };
+      if (isCold) {
+        logger.warn(
+          { source, err: error.message },
+          '⏳ Python AI Services container is spinning up (cold-start in progress)...'
+        );
+      } else {
+        logger.warn(
+          { source, err: error.message, url: `${env.FASTAPI_INTERNAL_URL}/health` },
+          '⚠️ Python AI Services health ping failed (service unreachable or starting)'
+        );
+      }
+      return this.lastWakeupResult;
+    }
+  }
+
   async checkHealth() {
+    const startTime = Date.now();
     try {
       const response = await this.client.get('/health', { timeout: this.healthTimeoutMs });
-      return { status: 'healthy', details: response.data };
+      this.aiStatus = 'healthy';
+      return {
+        status: 'healthy',
+        latencyMs: Date.now() - startTime,
+        details: response.data,
+      };
     } catch (error) {
       const isCold = this._isRetryableError(error);
+      this.aiStatus = isCold ? 'waking_up' : 'unreachable';
       logger.warn({ error: error.message, isCold }, 'FastAPI health check failed');
+      // If it's cold, trigger a wake-up in background if not already started
+      if (isCold && !this.isWakingUp) {
+        this.triggerWakeup('checkHealth_cold_start').catch(() => {});
+      }
       return {
         status: isCold ? 'cold_starting' : 'unreachable',
         details: error.response?.data || error.message,
       };
+    }
+  }
+
+  async checkReady() {
+    try {
+      const response = await this.client.get('/ready', { timeout: this.healthTimeoutMs });
+      return { status: 'ready', details: response.data };
+    } catch (error) {
+      return { status: 'unavailable', error: error.message };
     }
   }
 

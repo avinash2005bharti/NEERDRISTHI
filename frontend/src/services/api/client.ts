@@ -85,3 +85,23 @@ export async function apiRequest<T>(
     throw new ApiError(msg, 0, err);
   }
 }
+
+/**
+ * Fires a lightweight health & wake-up request to backend gateway and Python AI services.
+ * Dispatched on frontend mount so that sleeping cloud containers (e.g. Render) immediately start spinning up.
+ */
+export async function pingBackendAndAi(): Promise<void> {
+  const base = normalizedApiUrl || '';
+  try {
+    await fetch(`${base}/health/ai/wakeup?source=frontend_mount`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch {
+    try {
+      await fetch(`${base}/health`, { method: 'GET' });
+    } catch {
+      // Non-blocking ping
+    }
+  }
+}

@@ -12,6 +12,7 @@ import { ChatInterface } from './components/chat/ChatInterface';
 import { useAppState } from './hooks/useAppState';
 import { appStore } from './stores/appState';
 import { authService } from './services/auth/authService';
+import { pingBackendAndAi } from './services/api/client';
 import { useSocketEvents } from './hooks/useSocketEvents';
 
 export const App: React.FC = () => {
@@ -21,8 +22,11 @@ export const App: React.FC = () => {
   // Activate real-time socket events for multi-agent reasoning
   useSocketEvents(activeConversationId);
 
-  // Restore authenticated session on mount if token exists
+  // Restore authenticated session on mount and wake up Python AI services
   useEffect(() => {
+    // Send background wake-up ping so Python AI services (e.g. on Render) starts immediately
+    pingBackendAndAi();
+
     authService.getMe().then((user) => {
       if (user) {
         appStore.setUser(user, localStorage.getItem('orca_jwt_token'));

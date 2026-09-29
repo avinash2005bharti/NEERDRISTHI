@@ -22,8 +22,44 @@ export class HealthController {
         agentCore: {
           url: env.FASTAPI_INTERNAL_URL,
           status: agentCoreHealth.status,
+          latencyMs: agentCoreHealth.latencyMs,
+          details: agentCoreHealth.details,
         },
       },
+    });
+  }
+
+  async getAiHealth(_req, res) {
+    const agentCoreHealth = await fastApiClient.checkHealth();
+    res.status(agentCoreHealth.status === 'healthy' ? 200 : 503).json({
+      service: 'orca-ai',
+      url: env.FASTAPI_INTERNAL_URL,
+      ...agentCoreHealth,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  async wakeupAi(req, res) {
+    const source = req.query.source || req.body?.source || 'frontend_connect';
+    // Non-blocking background trigger to wake up Python AI services
+    fastApiClient.triggerWakeup(source).catch(() => {});
+
+    res.status(202).json({
+      message: 'Python AI services wake-up request dispatched',
+      targetUrl: `${env.FASTAPI_INTERNAL_URL}/health`,
+      currentStatus: fastApiClient.aiStatus,
+      source,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  async getReady(_req, res) {
+    const readyStatus = await fastApiClient.checkReady();
+    res.status(200).json({
+      status: 'ready',
+      gateway: 'ok',
+      agentCore: readyStatus,
+      timestamp: new Date().toISOString(),
     });
   }
 }
