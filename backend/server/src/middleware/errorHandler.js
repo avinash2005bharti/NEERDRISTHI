@@ -25,6 +25,19 @@ export const errorHandler = (err, req, res, _next) => {
 
   // Handle known operational AppError
   if (err instanceof AppError) {
+    if (err.code === 'AI_SERVICE_UNAVAILABLE') {
+      return res.status(503).json({
+        success: false,
+        error: 'AI_SERVICE_UNAVAILABLE',
+        message: err.message || 'The ORCA AI service is starting. Please retry shortly.',
+        retryAfterSeconds: 5,
+        meta: {
+          requestId,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    }
+
     const errorResponse = {
       success: false,
       error: {
@@ -32,6 +45,7 @@ export const errorHandler = (err, req, res, _next) => {
         message: err.message,
         details: err.details,
       },
+      message: err.message,
       meta: {
         requestId,
         timestamp: new Date().toISOString(),

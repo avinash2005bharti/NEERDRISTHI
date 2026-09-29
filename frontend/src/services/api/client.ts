@@ -70,8 +70,9 @@ export async function apiRequest<T>(
 
     if (!res.ok) {
       const errorMsg =
+        json?.message ||
         json?.error?.message ||
-        json?.error ||
+        (typeof json?.error === 'string' ? json.error : null) ||
         json?.detail ||
         `Request failed with status ${res.status}`;
       throw new ApiError(errorMsg, res.status, json);

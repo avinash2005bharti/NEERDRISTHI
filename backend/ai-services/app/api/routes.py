@@ -49,13 +49,13 @@ from ..providers.gateway import marine_data_gateway
 router = APIRouter()
 
 
-# ─── Health Check ─────────────────────────────────────────────────────────────
+# ─── Detailed Health Diagnostic ───────────────────────────────────────────────
 
-@router.get("/health", tags=["Health"])
-async def health_check():
+@router.get("/health/detail", tags=["Health"])
+async def detailed_health_check():
     """
-    Public health check endpoint for container orchestrators and Node.js Gateway.
-    Reports Python AI & GIS provider configuration without exposing secrets.
+    Detailed health check endpoint reporting Python AI & GIS provider configuration.
+    For ultra-lightweight orchestrator liveness checks, use root GET /health.
     Note: Primary application database (MongoDB) is managed exclusively by Node.js.
     """
     valkey_ok = await cache_client.ping()

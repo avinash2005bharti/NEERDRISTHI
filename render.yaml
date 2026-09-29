@@ -35,6 +35,7 @@ services:
     rootDir: backend/server
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
@@ -73,6 +74,7 @@ services:
     rootDir: backend/ai-services
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
     envVars:
       - key: APP_ENV
         value: production

@@ -39,3 +39,13 @@ export class UpstreamServiceError extends AppError {
     super(message, 502, 'UPSTREAM_SERVICE_ERROR', details);
   }
 }
+
+export class AiServiceUnavailableError extends AppError {
+  constructor(
+    message = 'The ORCA AI service is starting. Please retry shortly.',
+    details = undefined
+  ) {
+    super(message, 503, 'AI_SERVICE_UNAVAILABLE', details);
+  }
+}
+

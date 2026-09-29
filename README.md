@@ -473,7 +473,7 @@ graph TD
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`orca-frontend`** | Static Site | Node / Static | `frontend` | `npm install && npm run build` | Static files (`dist/index.html` with SPA rewrite `/*` -> `/index.html`) |
 | **`orca-backend`** | Web Service | Node.js | `backend/server` | `npm install` | `npm start` (binds to `0.0.0.0:$PORT`) |
-| **`orca-ai`** | Web Service | Python | `backend/ai-services` | `pip install -r requirements.txt` | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| **`orca-aiservices`** | Web Service | Python | `backend/ai-services` | `pip install -r requirements.txt` | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
 
 ### Step-by-Step Render Deployment Instructions
 

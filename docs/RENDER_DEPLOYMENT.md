@@ -97,15 +97,17 @@ Once deployment completes, your services will be live:
   ```
 
 ### 3. Python FastAPI Agent Core
-- **Health Check**: `https://orca-aiservices.onrender.com/health`
+- **Lightweight Health Check**: `https://orca-aiservices.onrender.com/health`
 - **Expected Response**:
   ```json
   {
-    "status": "healthy",
-    "service": "orca-agent-core",
-    "role": "AI / LangGraph Multi-Agent & Spatial Intelligence Backend"
+    "status": "ok",
+    "service": "orca-ai",
+    "environment": "production"
   }
   ```
+- **Readiness Check**: `https://orca-aiservices.onrender.com/ready`
+- **Detailed Component Diagnostic**: `https://orca-aiservices.onrender.com/health/detail`
 - **Interactive API Docs**: `https://orca-aiservices.onrender.com/docs`
 
 ---
@@ -113,7 +115,7 @@ Once deployment completes, your services will be live:
 ## 🧪 Post-Deployment Functional Testing
 
 1. **User Authentication**:
-   - Navigate to `https://orca-frontend.onrender.com`.
+   - Navigate to `https://orca-frontend-51u4.onrender.com`.
    - Register a new account (e.g., Role: `Fisherman`, Vessel: `Motorized Fiberglass`).
    - Log in and verify JWT persistence in browser localStorage.
 2. **Marine Safety Query**:
@@ -131,10 +133,11 @@ Once deployment completes, your services will be live:
 
 ## 🛠️ Troubleshooting & Technical Notes
 
-### 1. Render Free Tier Spin-Down (Cold Starts)
+### 1. Render Free Tier Spin-Down & Cold-Start Architecture
 - Render web services on the free tier spin down after 15 minutes of inactivity.
-- On the first request after spinning down, allow 30–50 seconds for the service to wake up.
-- The frontend includes automatic connection retries for both HTTP requests and Socket.IO connections.
+- On cold start, the Node.js API Gateway utilizes a **bounded exponential backoff retry strategy** (up to 3 retries over 20–45s) to transparently absorb the container allocation window without dropping user requests.
+- The Python AI core uses an **ultra-lightweight, non-blocking startup** (`GET /health` responds in <1ms without loading models or awaiting remote DBs), allowing Render's load balancer to instantly detect the port and route incoming traffic.
+- If the AI service is in the middle of booting and cannot be reached after all retries, the Gateway returns a structured `503 AI_SERVICE_UNAVAILABLE` with clear retry guidance rather than throwing an unhandled exception.
 
 ### 2. WebSocket & Socket.IO Connectivity
 - Socket.IO is configured to support both `websocket` and `polling` transports.
