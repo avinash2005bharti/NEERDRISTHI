@@ -21,9 +21,9 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://orca-backend-pgxq.onrender.com
+        value: https://orca-backend-9ezw.onrender.com
       - key: VITE_SOCKET_URL
-        value: https://orca-backend-pgxq.onrender.com
+        value: https://orca-backend-9ezw.onrender.com
 
   # ----------------------------------------------------------------------------
   # 2. API Gateway: Node.js Express & Realtime Socket.IO Server (Render Web Service)
@@ -41,9 +41,9 @@ services:
       - key: PORT
         value: 10000
       - key: CORS_ORIGINS
-        value: https://orca-frontend-55rq.onrender.com,http://localhost:5173,http://localhost:3000
+        value: https://orca-frontend-51u4.onrender.com,http://localhost:5173,http://localhost:3000
       - key: FRONTEND_URL
-        value: https://orca-frontend-55rq.onrender.com
+        value: https://orca-frontend-51u4.onrender.com
       - key: AI_SERVICE_URL
         value: https://orca-aiservices.onrender.com
       - key: FASTAPI_INTERNAL_URL

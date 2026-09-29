@@ -78,11 +78,11 @@ Click **Apply**. Render will concurrently build and deploy:
 Once deployment completes, your services will be live:
 
 ### 1. Frontend Client
-- **URL**: `https://orca-frontend-55rq.onrender.com`
+- **URL**: `https://orca-frontend-51u4.onrender.com`
 - **Verification**: Open in your browser; verify that the login screen, interactive marine map, and navigation render properly.
 
 ### 2. Node.js API Gateway
-- **Health Check**: `https://orca-backend-pgxq.onrender.com/health`
+- **Health Check**: `https://orca-backend-9ezw.onrender.com/health`
 - **Expected Response**:
   ```json
   {
