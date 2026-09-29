@@ -97,7 +97,7 @@ Once deployment completes, your services will be live:
   ```
 
 ### 3. Python FastAPI Agent Core
-- **Health Check**: `https://orca-ai-y03y.onrender.com/health`
+- **Health Check**: `https://orca-aiservices.onrender.com/health`
 - **Expected Response**:
   ```json
   {
@@ -106,7 +106,7 @@ Once deployment completes, your services will be live:
     "role": "AI / LangGraph Multi-Agent & Spatial Intelligence Backend"
   }
   ```
-- **Interactive API Docs**: `https://orca-ai-y03y.onrender.com/docs`
+- **Interactive API Docs**: `https://orca-aiservices.onrender.com/docs`
 
 ---
 

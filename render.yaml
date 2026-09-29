@@ -45,7 +45,7 @@ services:
       - key: FRONTEND_URL
         value: https://orca-frontend-55rq.onrender.com
       - key: AI_SERVICE_URL
-        value: https://orca-ai-y03y.onrender.com
+        value: https://orca-aiservices.onrender.com
       - key: FASTAPI_INTERNAL_URL
         value: https://orca-aiservices.onrender.com
       - key: INTERNAL_SERVICE_SECRET
@@ -67,7 +67,7 @@ services:
   # 3. Cognitive Agent Core: Python FastAPI & LangGraph (Render Web Service)
   # ----------------------------------------------------------------------------
   - type: web
-    name: orca-ai
+    name: orca-aiservices
     runtime: python
     plan: free
     rootDir: backend/ai-services
