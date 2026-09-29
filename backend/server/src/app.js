@@ -34,9 +34,17 @@ export function createApp() {
         if (
           corsOriginsArray.includes('*') ||
           corsOriginsArray.includes(origin) ||
-          /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+          /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
         ) {
           return callback(null, true);
+        }
+        try {
+          const url = new URL(origin);
+          if (url.hostname.endsWith('.onrender.com')) {
+            return callback(null, true);
+          }
+        } catch {
+          // invalid origin URL format
         }
         return callback(new Error(`CORS policy does not allow access from origin: ${origin}`));
       },

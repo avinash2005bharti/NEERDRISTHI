@@ -20,6 +20,14 @@ export function initializeSockets(httpServer) {
         ) {
           return callback(null, true);
         }
+        try {
+          const url = new URL(origin);
+          if (url.hostname.endsWith('.onrender.com')) {
+            return callback(null, true);
+          }
+        } catch {
+          // invalid origin URL format
+        }
         return callback(new Error(`CORS policy does not allow Socket.IO access from origin: ${origin}`));
       },
       methods: ['GET', 'POST'],
